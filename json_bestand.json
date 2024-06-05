@@ -1,4 +1,14 @@
 {
+  "event": {
+    "type": "event",
+    "id": 48,
+    "short": "SGDQ2024",
+    "name": "Summer Games Done Quick 2024",
+    "hashtag": "SGDQ2024",
+    "datetime": "2024-06-30T11:30:00-05:00",
+    "timezone": "US/Central",
+    "use_one_step_screening": false
+  },
   "schedule": [
     {
       "type": "speedrun",
