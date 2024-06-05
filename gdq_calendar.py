@@ -17,11 +17,23 @@ def generate_calendar():
     # cal = Calendar()
 
     events = response.json()
+    runs = []
+    other_items = []
+    run_count = 0
+    other_count = 0
 
-    for schedule in events['schedule']:
-        if schedule["type"] == "speedrun":
-            print(schedule["display_name"])
+    for run in events['schedule']:
+        if run["type"] == "speedrun":
+            print("run: ", run["display_name"])
+            runs += run
+            run_count += 1
+        else:
+            print("not run: ", run["topic"])
+            other_items += run
+            other_count += 1
 
+    print("runs total: ", run_count)
+    print("other total: ", other_count)
     # events = 
 
     # for event in events:
