@@ -25,28 +25,28 @@ def generate_calendar():
 
     events = response.json()
 
-    # setup for print checks
-    runs = []
-    other_items = []
-    run_count = 0
-    other_count = 0
+    # # setup for print checks
+    # runs = []
+    # other_items = []
+    # run_count = 0
+    # other_count = 0
 
-    # print checks
-    for event in events["schedule"]:
-        if event["type"] == "speedrun":
-            print("event: ", event["display_name"])
-            print("start time: ", event["starttime"])
-            print("end time: ", event["endtime"], "\n")
-            runs += event
-            run_count += 1
-        else:
-            print("other event: ", event["topic"])
-            print("duration: ", event["length"], "\n")
-            other_items += event
-            other_count += 1
+    # # print checks
+    # for event in events["schedule"]:
+    #     if event["type"] == "speedrun":
+    #         print("event: ", event["display_name"])
+    #         print("start time: ", event["starttime"])
+    #         print("end time: ", event["endtime"], "\n")
+    #         runs += event
+    #         run_count += 1
+    #     else:
+    #         print("other event: ", event["topic"])
+    #         print("duration: ", event["length"], "\n")
+    #         other_items += event
+    #         other_count += 1
 
-    print("runs total: ", run_count)
-    print("other total: ", other_count)
+    # print("runs total: ", run_count)
+    # print("other total: ", other_count)
 
     end_datetime = 0
 
@@ -72,15 +72,15 @@ def generate_calendar():
             category = event["category"]
             console = event["console"]
             runner_name = event["runners"][0]["name"]
-            if event["runners"][1]:
+            if len(event["runners"]) > 1:
                 for runner in event["runners"]:
                     if runner["name"] == runner_name:
                         continue
                     else:
-                        runner_name += (" & ", runner["name"])
+                        runner_name += (" & " + runner["name"])
 
             description = ("Category: " + category +
-                           "Runner(s): " + runner_name +
+                           "\nRunner(s): " + runner_name +
                            "\nConsole: " + console)
 
         # others:
@@ -107,10 +107,11 @@ def generate_calendar():
         cal_event.add('dtstart', start_datetime)
         cal_event.add('dtend', end_datetime)
         if description:
-            event.add('description', description)
+            cal_event.add('description', description)
         cal.add_component(cal_event)
 
-    return Response(response, mimetype='application/json')
+    return Response(cal.to_ical(), mimetype='text/calendar')
+    # return Response(response, mimetype='application/json')
 
 
 if __name__ == '__main__':
