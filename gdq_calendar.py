@@ -60,11 +60,12 @@ def generate_calendar():
 
             # get start time
             start_datetime = datetime.fromisoformat(event["starttime"])
+            start_datetime
 
             # get end time
             end_datetime = datetime.fromisoformat(event["endtime"])
-            print("event: ", title, "\nstart time: ", start_datetime,
-                  "\nend time:", end_datetime, "\n")
+            # print("event: ", title, "\nstart time: ", start_datetime,
+            #       "\nend time:", end_datetime, "\n")
 
             # print(start_time.time() , " - " , end_datetime.time())
 
@@ -91,7 +92,7 @@ def generate_calendar():
             # get duration
             time_split = event["length"].split(":")
             duration = int(time_split[0])*60 + int(time_split[1])
-            print("event: ", title, "\nduration: ", duration, " minutes\n")
+            # print("event: ", title, "\nduration: ", duration, " minutes\n")
 
             # transform to usable datetime
             start_datetime = end_datetime
