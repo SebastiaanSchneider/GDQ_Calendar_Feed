@@ -14,7 +14,7 @@ app = Flask(__name__)
 def generate_calendar():
     url = "https://gamesdonequick.com/api/schedule/48"
     response = requests.get(url, timeout=10)
-    
+
     # setup kalender variabele
     cal = Calendar()
 
@@ -31,6 +31,7 @@ def generate_calendar():
     run_count = 0
     other_count = 0
 
+    # print checks
     for event in events["schedule"]:
         if event["type"] == "speedrun":
             print("event: ", event["display_name"])
@@ -64,7 +65,7 @@ def generate_calendar():
             end_datetime = datetime.fromisoformat(event["endtime"])
             print("event: ", title, "\nstart time: ", start_datetime,
                   "\nend time:", end_datetime, "\n")
-            
+
             # print(start_time.time() , " - " , end_datetime.time())
 
             # add rest to description
@@ -82,67 +83,32 @@ def generate_calendar():
                            "Runner(s): " + runner_name +
                            "\nConsole: " + console)
 
-
-
-            # start_time = event["starttime"].split("T")
-            # print(start_time[0])
-            # print(start_time[1].split("-")[0])
-            
-            # start_date = start_time[0].split("-")
-            # start_year = int(start_date[0])
-            # start_month = int(start_date[1])
-            # start_day = int(start_date[2])
-
-            # start_time = start_time[1].split(":")
-            # start_hour = int(start_time[0])
-            # start_minute = int(start_time[1])
-
-            # get end time
-            # end_time = event["endtime"].split("T")
-            # print(end_time[0])
-            # print(end_time[1].split("-")[0])
-
-            # end_date = end_time[0].split("-")
-            # end_year = int(end_date[0])
-            # end_month = int(end_date[1])
-            # end_day = int(end_date[2])
-
-            # end_time = end_time[1].split(":")
-            # end_hour = int(end_time[0])
-            # end_minute = int(end_time[1])
-
-            # # transform to usable datetime
-            # start_datetime = datetime(start_year, start_month, start_day,
-            #                           start_hour, start_minute, 0,
-            #                           tzinfo=pytz.timezone('America/Minneapolis'))
-
-
         # others:
         else:
             # get type and/or topic
             title = event["topic"]
-            
+
             # get duration
             time_split = event["length"].split(":")
             duration = int(time_split[0])*60 + int(time_split[1])
-            print("event: ", title, "\nduration: ", duration, " minutes aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n")
-            
+            print("event: ", title, "\nduration: ", duration, " minutes\n")
+
             # transform to usable datetime
             start_datetime = end_datetime
             end_datetime = start_datetime + timedelta(minutes=duration)
-
-            # add rest to description
 
 
         # uid = str(uuid.uuid4())  # willekeurige uid voor event
 
 
         # Create an event
-        # cal_event = Event()
-        # cal_event.add('summary', title)
-        # cal_event.add('dtstart', start_datetime)
-        # cal_event.add('dtend', end_datetime)
-        # cal.add_component(cal_event)
+        cal_event = Event()
+        cal_event.add('summary', title)
+        cal_event.add('dtstart', start_datetime)
+        cal_event.add('dtend', end_datetime)
+        if description:
+            event.add('description', description)
+        cal.add_component(cal_event)
 
     return Response(response, mimetype='application/json')
 
