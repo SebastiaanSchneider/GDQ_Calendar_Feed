@@ -25,29 +25,6 @@ def generate_calendar():
 
     events = response.json()
 
-    # # setup for print checks
-    # runs = []
-    # other_items = []
-    # run_count = 0
-    # other_count = 0
-
-    # # print checks
-    # for event in events["schedule"]:
-    #     if event["type"] == "speedrun":
-    #         print("event: ", event["display_name"])
-    #         print("start time: ", event["starttime"])
-    #         print("end time: ", event["endtime"], "\n")
-    #         runs += event
-    #         run_count += 1
-    #     else:
-    #         print("other event: ", event["topic"])
-    #         print("duration: ", event["length"], "\n")
-    #         other_items += event
-    #         other_count += 1
-
-    # print("runs total: ", run_count)
-    # print("other total: ", other_count)
-
     end_datetime = 0
 
     # create actual calendar events
@@ -60,14 +37,9 @@ def generate_calendar():
 
             # get start time
             start_datetime = datetime.fromisoformat(event["starttime"])
-            start_datetime
 
             # get end time
             end_datetime = datetime.fromisoformat(event["endtime"])
-            # print("event: ", title, "\nstart time: ", start_datetime,
-            #       "\nend time:", end_datetime, "\n")
-
-            # print(start_time.time() , " - " , end_datetime.time())
 
             # add rest to description
             category = event["category"]
@@ -92,15 +64,10 @@ def generate_calendar():
             # get duration
             time_split = event["length"].split(":")
             duration = int(time_split[0])*60 + int(time_split[1])
-            # print("event: ", title, "\nduration: ", duration, " minutes\n")
 
             # transform to usable datetime
             start_datetime = end_datetime
             end_datetime = start_datetime + timedelta(minutes=duration)
-
-
-        # uid = str(uuid.uuid4())  # willekeurige uid voor event
-
 
         # Create an event
         cal_event = Event()
