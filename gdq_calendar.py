@@ -58,7 +58,7 @@ def generate_calendar():
                 f"Category: {category}\n"
                 f"Runner(s): {runner_names}\n"
                 f"Console: {console}"
-                )
+            )
 
         # Other events:
         else:
