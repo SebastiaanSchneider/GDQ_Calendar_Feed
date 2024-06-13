@@ -1,71 +1,73 @@
-import pytz
-import uuid
-import requests
-from bs4 import BeautifulSoup
+"""
+Gets json of SGDQ event schedule, transforms it into iCal format calendar
+"""
 from datetime import datetime, timedelta
-from icalendar import Calendar, Event
+import requests
 from flask import Flask, jsonify, Response
-import pprint
+from icalendar import Calendar, Event
+
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def generate_calendar():
-    url = "https://gamesdonequick.com/api/schedule/48"
-    response = requests.get(url, timeout=10)
+    """
+    Fetch the schedule from the GDQ API, parse the events, 
+    and generate an iCalendar file.
+    """
 
-    # setup kalender variabele
+    url = "https://gamesdonequick.com/api/schedule/48"
+
+    # Get the json from api
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+        events = response.json()
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": str(e)}), 500
+    except ValueError:
+        return jsonify({"error": "Invalid JSON response"}), 500
+
+    # Setup calendar variable
     cal = Calendar()
 
-    # basiscomponenten ical-format
-    cal.add('prodid', 
-            '-//SGDQ Calendar//https://gamesdonequick.com/api/schedule/48//')
+    # Basic components for iCal format
+    cal.add('prodid', '-//SGDQ Calendar//https://gamesdonequick.com/api/schedule/48//')
     cal.add('version', '2.0')
-
-    events = response.json()
 
     end_datetime = 0
 
-    # create actual calendar events
+    # Create actual calendar events
     for event in events["schedule"]:
-        # divide between types
-        # runs:
+        # Divide between types of events
+        # Runs:
         if event["type"] == "speedrun":
-            # get title
+            # Get title and start/end times
             title = event["display_name"]
-
-            # get start time
             start_datetime = datetime.fromisoformat(event["starttime"])
-
-            # get end time
             end_datetime = datetime.fromisoformat(event["endtime"])
 
-            # add rest to description
+            # Add other details to description
             category = event["category"]
             console = event["console"]
-            runner_name = event["runners"][0]["name"]
-            if len(event["runners"]) > 1:
-                for runner in event["runners"]:
-                    if runner["name"] == runner_name:
-                        continue
-                    else:
-                        runner_name += (" & " + runner["name"])
+            runner_names = " & ".join(runner["name"]
+                                      for runner in event["runners"])
 
             description = ("Category: " + category +
-                           "\nRunner(s): " + runner_name +
+                           "\nRunner(s): " + runner_names +
                            "\nConsole: " + console)
 
-        # others:
+        # Other events:
         else:
-            # get type and/or topic
+            # Get event type or topic
             title = event["topic"]
 
-            # get duration
+            # Get duration
             time_split = event["length"].split(":")
-            duration = int(time_split[0])*60 + int(time_split[1])
+            duration = (int(time_split[0]) * 60) + int(time_split[1])
 
-            # transform to usable datetime
+            # Transform previous end time to new start and end time
             start_datetime = end_datetime
             end_datetime = start_datetime + timedelta(minutes=duration)
 
@@ -79,7 +81,6 @@ def generate_calendar():
         cal.add_component(cal_event)
 
     return Response(cal.to_ical(), mimetype='text/calendar')
-    # return Response(response, mimetype='application/json')
 
 
 if __name__ == '__main__':
