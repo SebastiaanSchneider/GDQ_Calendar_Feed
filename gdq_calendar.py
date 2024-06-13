@@ -1,5 +1,5 @@
 """
-Gets JSON of SGDQ event schedule, transforms it into iCal format calendar
+Gets JSON of SGDQ event schedule, transforms it into iCal format calendar.
 """
 from datetime import datetime, timedelta
 import requests
@@ -19,7 +19,7 @@ def generate_calendar():
 
     url = "https://gamesdonequick.com/api/schedule/48"
 
-    # Get the json from the API
+    # Get the JSON from the API
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
