@@ -17,7 +17,7 @@ def generate_calendar():
     and generate an iCalendar file.
     """
 
-    url = "https://gamesdonequick.com/api/schedule/48"
+    url = "https://gamesdonequick.com/api/schedule/56"
 
     # Get the JSON from the API
     try:
@@ -33,7 +33,7 @@ def generate_calendar():
     cal = Calendar()
 
     # Basic components for iCal format
-    cal.add('prodid', '-//SGDQ Calendar//https://gamesdonequick.com/api/schedule/48//')
+    cal.add('prodid', '-//SGDQ Calendar//https://gamesdonequick.com/api/schedule/56//')
     cal.add('version', '2.0')
 
     end_datetime = 0
