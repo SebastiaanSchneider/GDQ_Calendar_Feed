@@ -2,9 +2,10 @@
 Gets JSON of SGDQ event schedule, transforms it into iCal format calendar.
 """
 from datetime import datetime, timedelta
-import requests
+
 from flask import Flask, jsonify, Response
 from icalendar import Calendar, Event
+import requests
 
 
 app = Flask(__name__)
@@ -17,7 +18,9 @@ def generate_calendar():
     and generate an iCalendar file.
     """
 
-    url = "https://gamesdonequick.com/api/schedule/56"
+    # Constant for the eventnumber
+    event_number = "56"
+    url = "https://gamesdonequick.com/api/schedule/" + event_number
 
     # Get the JSON from the API
     try:
@@ -33,7 +36,9 @@ def generate_calendar():
     cal = Calendar()
 
     # Basic components for iCal format
-    cal.add('prodid', '-//SGDQ Calendar//https://gamesdonequick.com/api/schedule/56//')
+    cal.add('prodid',
+            '-//SGDQ Calendar//https://gamesdonequick.com/api/schedule/' +
+            event_number + '//')
     cal.add('version', '2.0')
 
     end_datetime = 0
@@ -78,7 +83,7 @@ def generate_calendar():
         cal_event.add('summary', title)
         cal_event.add('dtstart', start_datetime)
         cal_event.add('dtend', end_datetime)
-        if description:
+        if description:  # pylint: disable=possibly-used-before-assignment
             cal_event.add('description', description)
         cal.add_component(cal_event)
 
