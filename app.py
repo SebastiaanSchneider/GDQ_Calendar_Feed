@@ -19,8 +19,9 @@ def generate_calendar():
     """
 
     # Constant for the eventnumber
-    event_number = "56"
+    event_number = "62"
     url = "https://gamesdonequick.com/api/schedule/" + event_number
+    version = "AGDQ 2026"
 
     # Get the JSON from the API
     try:
@@ -36,9 +37,7 @@ def generate_calendar():
     cal = Calendar()
 
     # Basic components for iCal format
-    cal.add('prodid',
-            '-//SGDQ Calendar//https://gamesdonequick.com/api/schedule/' +
-            event_number + '//')
+    cal.add('prodid', '-//' + version + ' Calendar//' + url + '//')
     cal.add('version', '2.0')
 
     end_datetime = 0
